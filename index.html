@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IG Downloader</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;600;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ig: linear-gradient(135deg, #f09433 0%, #e6683c 20%, #dc2743 45%, #cc2366 70%, #bc1888 100%);
+      --bg: #080810;
+      --card: rgba(255,255,255,0.038);
+      --border: rgba(255,255,255,0.08);
+      --muted: rgba(255,255,255,0.38);
+      --accent: #dc2743;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse 80% 60% at 10% 0%, rgba(255,0,80,0.11) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 90% 100%, rgba(140,40,200,0.10) 0%, transparent 55%),
+        var(--bg);
+      color: #fff;
+      font-family: 'Sora', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 16px 64px;
+    }
+
+    /* ══ Logo ══ */
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 44px;
+    }
+    .brand-icon {
+      width: 52px; height: 52px;
+      border-radius: 15px;
+      background: var(--ig);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 26px;
+      box-shadow: 0 0 28px rgba(220,39,67,.45), 0 0 56px rgba(188,24,136,.18);
+    }
+    .brand-name { font-size: 22px; font-weight: 800; letter-spacing: -.03em; line-height: 1.1; }
+    .brand-sub  { font-size: 12.5px; color: var(--muted); font-family: 'DM Sans', sans-serif; margin-top: 2px; }
+
+    /* ══ Card ══ */
+    .card {
+      width: 100%; max-width: 560px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      padding: 36px 34px;
+      box-shadow: 0 20px 70px rgba(0,0,0,.55), inset 0 1px 0 rgba(255,255,255,.06);
+    }
+
+    /* ══ Input ══ */
+    .field-label {
+      font-size: 10.5px; font-weight: 700;
+      letter-spacing: .1em; text-transform: uppercase;
+      color: var(--muted); margin-bottom: 10px;
+    }
+    .url-wrap {
+      display: flex;
+      background: rgba(255,255,255,0.055);
+      border: 1.5px solid rgba(255,255,255,0.10);
+      border-radius: 13px;
+      overflow: hidden;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .url-wrap:focus-within {
+      border-color: rgba(220,39,67,.6);
+      box-shadow: 0 0 0 3px rgba(220,39,67,.10);
+    }
+    .url-wrap input {
+      flex: 1; background: transparent; border: none; outline: none;
+      color: #fff; font-size: 14px;
+      font-family: 'DM Sans', sans-serif;
+      padding: 15px 18px;
+      min-width: 0;
+    }
+    .url-wrap input::placeholder { color: rgba(255,255,255,.26); }
+    .paste-btn {
+      background: transparent;
+      border: none;
+      border-left: 1px solid rgba(255,255,255,.08);
+      color: var(--muted);
+      padding: 0 16px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: color .2s, background .2s;
+    }
+    .paste-btn:hover { color: #fff; background: rgba(255,255,255,.05); }
+
+    /* ══ Go button ══ */
+    .go-btn {
+      margin-top: 12px;
+      width: 100%; padding: 16px;
+      background: var(--ig);
+      border: none; border-radius: 12px; color: #fff;
+      font-family: 'Sora', sans-serif; font-weight: 700; font-size: 15px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      box-shadow: 0 4px 22px rgba(220,39,67,.3);
+      transition: opacity .2s, transform .15s, box-shadow .2s;
+      letter-spacing: .01em;
+    }
+    .go-btn:hover:not(:disabled) {
+      opacity: .92; transform: translateY(-1px);
+      box-shadow: 0 8px 30px rgba(220,39,67,.4);
+    }
+    .go-btn:active:not(:disabled) { transform: translateY(0); }
+    .go-btn:disabled { opacity: .45; cursor: not-allowed; box-shadow: none; transform: none; }
+
+    /* ══ Status ══ */
+    .status {
+      display: none;
+      margin-top: 16px;
+      padding: 15px 18px;
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      animation: fadeUp .3s ease;
+    }
+    .status.show   { display: block; }
+    .status.info   { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); color: rgba(255,255,255,.65); }
+    .status.ok     { background: rgba(30,200,100,.06); border: 1px solid rgba(30,200,100,.18); color: #7dffc0; }
+    .status.err    { background: rgba(255,60,60,.07); border: 1px solid rgba(255,60,60,.18); color: #ffaaaa; }
+
+    /* ══ Progress bar ══ */
+    .pbar-track { height: 3px; background: rgba(255,255,255,.07); border-radius: 3px; margin-top: 10px; overflow: hidden; }
+    .pbar-fill  { height: 3px; width: 0%; border-radius: 3px; background: var(--ig); transition: width .3s ease; }
+
+    /* ══ Thumbnail (carousel picker) ══ */
+    .picker-grid {
+      display: none;
+      margin-top: 18px;
+      display: none;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+    }
+    .picker-grid.show { display: grid; }
+    .picker-item {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 2px solid transparent;
+      transition: border-color .2s, transform .15s;
+      aspect-ratio: 1;
+      background: #111;
+    }
+    .picker-item:hover { border-color: var(--accent); transform: scale(1.03); }
+    .picker-item img  { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .picker-item .vid-badge {
+      position: absolute; bottom: 6px; left: 6px;
+      background: rgba(0,0,0,.7); border-radius: 5px;
+      font-size: 10px; font-family: 'DM Sans', sans-serif;
+      color: #fff; padding: 2px 6px;
+    }
+
+    /* ══ Video preview ══ */
+    .preview {
+      display: none;
+      margin-top: 18px;
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,.09);
+      background: #000;
+      animation: fadeUp .4s ease;
+    }
+    .preview.show { display: block; }
+    .preview video { width: 100%; display: block; max-height: 380px; }
+
+    /* ══ Result actions ══ */
+    .result-box {
+      display: none;
+      margin-top: 14px;
+      animation: fadeUp .4s ease .1s both;
+    }
+    .result-box.show { display: block; }
+    .post-title {
+      font-size: 13px; color: var(--muted);
+      font-family: 'DM Sans', sans-serif;
+      line-height: 1.5; margin-bottom: 14px;
+    }
+    .dl-btn {
+      width: 100%; padding: 16px;
+      background: var(--ig);
+      border: none; border-radius: 12px; color: #fff;
+      font-family: 'Sora', sans-serif; font-weight: 700; font-size: 15px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      box-shadow: 0 6px 26px rgba(220,39,67,.32);
+      transition: opacity .2s, transform .15s;
+    }
+    .dl-btn:hover:not(:disabled) { opacity: .92; transform: translateY(-1px); }
+    .dl-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+
+    .try-again {
+      display: block; width: 100%;
+      text-align: center; margin-top: 12px;
+      background: transparent; border: none;
+      color: var(--muted); font-size: 13px;
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer; text-decoration: underline;
+      transition: color .2s;
+    }
+    .try-again:hover { color: rgba(255,255,255,.7); }
+
+    /* ══ Animations ══ */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .spin {
+      display: inline-block; width: 16px; height: 16px;
+      border: 2.5px solid rgba(255,255,255,.22);
+      border-top-color: #fff; border-radius: 50%;
+      animation: spinr .7s linear infinite;
+      vertical-align: middle;
+    }
+    @keyframes spinr { to { transform: rotate(360deg); } }
+
+    /* ══ Footer ══ */
+    .foot {
+      margin-top: 36px;
+      text-align: center;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px;
+      color: rgba(255,255,255,.16);
+      line-height: 1.9;
+    }
+    .foot a { color: rgba(255,255,255,.3); text-decoration: none; }
+    .foot a:hover { color: rgba(255,255,255,.6); }
+
+    @media (max-width: 480px) {
+      .card { padding: 26px 18px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Brand -->
+<div class="brand">
+  <div class="brand-icon">📸</div>
+  <div>
+    <div class="brand-name">IG Downloader</div>
+    <div class="brand-sub">Posts · Reels · IGTV · Carousels</div>
+  </div>
+</div>
+
+<!-- Main card -->
+<div class="card">
+
+  <div class="field-label">Instagram Link</div>
+  <div class="url-wrap">
+    <input type="text" id="urlInput"
+      placeholder="https://www.instagram.com/reel/..."
+      autocomplete="off" spellcheck="false"/>
+    <button class="paste-btn" id="pasteBtn">Paste</button>
+  </div>
+
+  <button class="go-btn" id="goBtn">
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 4v11"/>
+    </svg>
+    <span id="goBtnText">Download Video</span>
+  </button>
+
+  <!-- Status bar -->
+  <div class="status" id="status">
+    <span id="statusText"></span>
+    <div class="pbar-track"><div class="pbar-fill" id="pbar"></div></div>
+  </div>
+
+  <!-- Carousel picker -->
+  <div class="picker-grid" id="pickerGrid"></div>
+
+  <!-- Video preview -->
+  <div class="preview" id="preview">
+    <video id="videoEl" controls playsinline preload="metadata"></video>
+  </div>
+
+  <!-- Download + reset -->
+  <div class="result-box" id="resultBox">
+    <div class="post-title" id="postTitle"></div>
+    <button class="dl-btn" id="dlBtn">
+      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/>
+      </svg>
+      Download MP4
+    </button>
+    <button class="try-again" id="tryAgain">↩ Download another</button>
+  </div>
+
+</div>
+
+<!-- Footer -->
+<div class="foot">
+  Powered by <a href="https://cobalt.tools" target="_blank" rel="noopener">cobalt.tools</a> — free &amp; open source<br/>
+  Works with public accounts only · No data stored
+</div>
+
+<script>
+// ──────────────────────────────────────────────────────────
+//  cobalt.tools public API — no key, no sign-up, free
+// ──────────────────────────────────────────────────────────
+const COBALT = 'https://api.cobalt.tools/api/json';
+
+// ── DOM ──────────────────────────────────────────────────
+const urlInput   = document.getElementById('urlInput');
+const pasteBtn   = document.getElementById('pasteBtn');
+const goBtn      = document.getElementById('goBtn');
+const goBtnText  = document.getElementById('goBtnText');
+const statusEl   = document.getElementById('status');
+const statusText = document.getElementById('statusText');
+const pbar       = document.getElementById('pbar');
+const pickerGrid = document.getElementById('pickerGrid');
+const preview    = document.getElementById('preview');
+const videoEl    = document.getElementById('videoEl');
+const resultBox  = document.getElementById('resultBox');
+const postTitle  = document.getElementById('postTitle');
+const dlBtn      = document.getElementById('dlBtn');
+const tryAgain   = document.getElementById('tryAgain');
+
+let activeVideoUrl = '';
+let activeFilename = 'instagram_video.mp4';
+let pbarTimer = null;
+
+// ── Progress bar ─────────────────────────────────────────
+function pbarStart() {
+  let v = 0; pbar.style.width = '0%';
+  clearInterval(pbarTimer);
+  pbarTimer = setInterval(() => {
+    v = Math.min(v + Math.random() * 9, 78);
+    pbar.style.width = v + '%';
+  }, 220);
+}
+function pbarDone()  { clearInterval(pbarTimer); pbar.style.width = '100%'; }
+function pbarReset() { clearInterval(pbarTimer); pbar.style.width = '0%'; }
+
+// ── Status helper ────────────────────────────────────────
+function setStatus(msg, type = 'info') {
+  statusEl.className = `status show ${type}`;
+  statusText.innerHTML = msg;
+  // show/hide pbar track depending on type
+  document.querySelector('.pbar-track').style.display = type === 'info' ? 'block' : 'none';
+}
+function clearStatus() { statusEl.className = 'status'; }
+
+// ── Reset UI ─────────────────────────────────────────────
+function resetAll() {
+  urlInput.value = '';
+  clearStatus();
+  pbarReset();
+  preview.classList.remove('show');
+  resultBox.classList.remove('show');
+  pickerGrid.classList.remove('show');
+  pickerGrid.innerHTML = '';
+  videoEl.src = '';
+  activeVideoUrl = '';
+  urlInput.focus();
+}
+
+// ── Paste ────────────────────────────────────────────────
+pasteBtn.addEventListener('click', async () => {
+  try {
+    const text = await navigator.clipboard.readText();
+    urlInput.value = text.trim();
+  } catch {
+    urlInput.focus();
+  }
+});
+
+// ── cobalt API call ──────────────────────────────────────
+async function callCobalt(url) {
+  const res = await fetch(COBALT, {
+    method: 'POST',
+    headers: {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      url,
+      vQuality: '720',
+      filenamePattern: 'basic',
+      isAudioOnly: false,
+    }),
+  });
+
+  if (res.status === 429) throw new Error('Rate limited — wait a moment and try again.');
+  if (!res.ok) throw new Error(`Server error ${res.status}`);
+
+  const data = await res.json();
+  return data;
+}
+
+// ── Build filename ───────────────────────────────────────
+function buildFilename(rawUrl, index) {
+  const sc = rawUrl.match(/\/(?:p|reel|tv)\/([A-Za-z0-9_\-]+)/);
+  const base = sc ? sc[1] : Date.now();
+  return index != null ? `instagram_${base}_${index + 1}.mp4` : `instagram_${base}.mp4`;
+}
+
+// ── Main download flow ────────────────────────────────────
+async function run() {
+  const raw = urlInput.value.trim();
+  if (!raw) { urlInput.focus(); return; }
+
+  if (!raw.includes('instagram.com')) {
+    setStatus('⚠️  Please paste a valid Instagram link.', 'err');
+    return;
+  }
+
+  // Reset
+  preview.classList.remove('show');
+  resultBox.classList.remove('show');
+  pickerGrid.classList.remove('show');
+  pickerGrid.innerHTML = '';
+  videoEl.src = '';
+  activeVideoUrl = '';
+
+  goBtn.disabled = true;
+  goBtnText.innerHTML = '<span class="spin"></span>&nbsp; Fetching...';
+  document.querySelector('.pbar-track').style.display = 'block';
+  setStatus('<span class="spin"></span>&nbsp; Connecting to cobalt...', 'info');
+  pbarStart();
+
+  try {
+    const data = await callCobalt(raw);
+    pbarDone();
+
+    // ── Single video ────────────────────────────
+    if (data.status === 'stream' || data.status === 'redirect' || data.status === 'tunnel') {
+      activeVideoUrl  = data.url;
+      activeFilename  = buildFilename(raw);
+      showSingle(data.url, data.status === 'tunnel');
+    }
+
+    // ── Carousel / picker ───────────────────────
+    else if (data.status === 'picker') {
+      const items = data.picker || [];
+      if (items.length === 0) throw new Error('No media found in this post.');
+      showPicker(items, raw);
+    }
+
+    // ── Error from API ───────────────────────────
+    else if (data.status === 'error' || data.status === 'rate-limit') {
+      throw new Error(data.text || data.status || 'Could not process this link.');
+    }
+
+    else {
+      throw new Error(`Unexpected response: ${data.status}`);
+    }
+
+  } catch (err) {
+    pbarDone();
+    setStatus(
+      `❌ ${err.message}<br>
+      <small style="opacity:.65;font-size:12px;display:block;margin-top:6px">
+        Make sure the account is <strong>public</strong> and the link is a Post, Reel, or IGTV.
+        Stories are not supported.
+      </small>`,
+      'err'
+    );
+  } finally {
+    goBtn.disabled = false;
+    goBtnText.innerHTML = `
+      <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 4v11"/>
+      </svg>
+      Download Video`;
+  }
+}
+
+// ── Show single video ────────────────────────────────────
+function showSingle(videoUrl, isTunnel) {
+  clearStatus();
+
+  // For tunnel URLs (proxied), we can play + download directly
+  // For redirect URLs, same
+  videoEl.src = videoUrl;
+  preview.classList.add('show');
+
+  postTitle.textContent = `📹 ${activeFilename}`;
+  resultBox.classList.add('show');
+
+  dlBtn.onclick = () => downloadVideo(videoUrl, activeFilename);
+}
+
+// ── Show carousel picker ──────────────────────────────────
+function showPicker(items, rawUrl) {
+  setStatus(`🎠 Carousel — ${items.length} items found. Tap one to download.`, 'ok');
+  document.querySelector('.pbar-track').style.display = 'none';
+
+  pickerGrid.innerHTML = '';
+  pickerGrid.classList.add('show');
+
+  items.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.className = 'picker-item';
+
+    const isVideo = item.type === 'video' || (item.url && item.url.includes('.mp4'));
+    const thumb   = item.thumb || item.thumbnail || '';
+
+    div.innerHTML = `
+      ${thumb ? `<img src="${thumb}" alt="Slide ${i+1}" loading="lazy"/>` : `<div style="display:flex;align-items:center;justify-content:center;height:100%;font-size:24px">${isVideo ? '🎬' : '🖼'}</div>`}
+      <span class="vid-badge">${isVideo ? '▶ Video' : '🖼 Photo'} ${i + 1}</span>
+    `;
+
+    div.addEventListener('click', async () => {
+      if (!isVideo) {
+        // For photos, open in new tab
+        window.open(item.url, '_blank', 'noopener');
+        return;
+      }
+      const fname = buildFilename(rawUrl, i);
+      // Show preview
+      activeVideoUrl = item.url;
+      activeFilename = fname;
+      videoEl.src = item.url;
+      preview.classList.add('show');
+      postTitle.textContent = `📹 ${fname}`;
+      resultBox.classList.add('show');
+      dlBtn.onclick = () => downloadVideo(item.url, fname);
+      preview.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+
+    pickerGrid.appendChild(div);
+  });
+}
+
+// ── Download video ────────────────────────────────────────
+async function downloadVideo(videoUrl, filename) {
+  const origInner = dlBtn.innerHTML;
+  dlBtn.disabled = true;
+  dlBtn.innerHTML = `<span class="spin"></span>&nbsp; Saving...`;
+
+  try {
+    // Fetch as blob for a true "Save As" download
+    const res = await fetch(videoUrl);
+    if (!res.ok) throw new Error(`${res.status}`);
+    const blob = await res.blob();
+    const blobUrl = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 15000);
+  } catch {
+    // Fallback: open in new tab (user saves manually via right-click > Save)
+    window.open(videoUrl, '_blank', 'noopener');
+  } finally {
+    dlBtn.disabled = false;
+    dlBtn.innerHTML = origInner;
+  }
+}
+
+// ── Events ────────────────────────────────────────────────
+goBtn.addEventListener('click', run);
+urlInput.addEventListener('keydown', e => { if (e.key === 'Enter') run(); });
+tryAgain.addEventListener('click', resetAll);
+
+// Auto-run if URL is in ?url= query param (optional feature)
+const qUrl = new URLSearchParams(location.search).get('url');
+if (qUrl) { urlInput.value = qUrl; run(); }
+</script>
+</body>
+</html>
