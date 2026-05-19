@@ -7,22 +7,15 @@
   <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       min-height: 100vh;
       background:
-        radial-gradient(ellipse at 15% 15%, rgba(255,0,102,0.13) 0%, transparent 55%),
-        radial-gradient(ellipse at 85% 85%, rgba(131,58,180,0.13) 0%, transparent 55%),
+        radial-gradient(ellipse at 15% 15%, rgba(255,0,102,.13) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 85%, rgba(131,58,180,.13) 0%, transparent 55%),
         #0a0a0f;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      font-family: 'Sora', sans-serif;
-      color: #fff;
-      padding: 32px 16px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-family: 'Sora', sans-serif; color: #fff; padding: 32px 16px;
     }
-
     .header { display:flex; align-items:center; gap:16px; margin-bottom:36px; }
     .ig-logo {
       width:56px; height:56px; border-radius:16px; font-size:28px;
@@ -32,31 +25,24 @@
     }
     .header h1 { font-size:24px; font-weight:800; letter-spacing:-.03em; }
     .header p  { font-size:13px; color:rgba(255,255,255,.35); font-family:'DM Sans',sans-serif; margin-top:3px; }
-
     .card {
-      width:100%; max-width:560px;
-      background:rgba(255,255,255,.04);
-      border:1px solid rgba(255,255,255,.09);
-      border-radius:24px;
-      padding:38px 36px;
-      box-shadow: 0 24px 80px rgba(0,0,0,.5);
-      backdrop-filter:blur(20px);
+      width:100%; max-width:580px;
+      background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.09);
+      border-radius:24px; padding:38px 36px;
+      box-shadow:0 24px 80px rgba(0,0,0,.5); backdrop-filter:blur(20px);
     }
-
     .label { font-size:11px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:rgba(255,255,255,.35); margin-bottom:10px; }
-
     .input-row { display:flex; gap:10px; }
     .input-row input {
       flex:1; background:rgba(255,255,255,.06); border:1.5px solid rgba(255,255,255,.11);
-      border-radius:12px; outline:none; color:#fff;
-      font-size:14px; font-family:'DM Sans',sans-serif;
-      padding:15px 18px; transition:border-color .2s, box-shadow .2s;
+      border-radius:12px; outline:none; color:#fff; font-size:14px;
+      font-family:'DM Sans',sans-serif; padding:15px 18px;
+      transition:border-color .2s, box-shadow .2s;
     }
     .input-row input:focus { border-color:rgba(220,39,67,.65); box-shadow:0 0 0 3px rgba(220,39,67,.1); }
     .input-row input::placeholder { color:rgba(255,255,255,.28); }
-
     .fetch-btn {
-      padding:15px 22px;
+      padding:15px 24px;
       background: linear-gradient(135deg,#f09433,#dc2743,#bc1888);
       border:none; border-radius:12px; color:#fff;
       font-family:'Sora',sans-serif; font-weight:700; font-size:14px;
@@ -66,51 +52,56 @@
     }
     .fetch-btn:hover:not(:disabled) { opacity:.9; transform:translateY(-1px); }
     .fetch-btn:disabled { opacity:.4; cursor:not-allowed; transform:none; }
-
+    /* Status */
     .status-box {
-      display:none; margin-top:18px;
-      background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);
-      border-radius:14px; padding:18px 20px;
-      font-family:'DM Sans',sans-serif; font-size:14px;
-      animation: fadeUp .35s ease;
+      display:none; margin-top:16px;
+      border-radius:14px; padding:16px 18px;
+      font-family:'DM Sans',sans-serif; font-size:13.5px;
+      animation: fadeUp .3s ease;
     }
     .status-box.show { display:block; }
-    .status-box.error { background:rgba(255,60,60,.08); border-color:rgba(255,60,60,.2); color:#ff9090; }
-    .status-box.success { background:rgba(30,200,100,.07); border-color:rgba(30,200,100,.18); color:#7dffb3; }
-
-    .progress-bar-wrap { height:4px; background:rgba(255,255,255,.08); border-radius:4px; margin-top:10px; overflow:hidden; }
-    .progress-bar {
-      height:4px; width:0%;
-      background: linear-gradient(90deg,#f09433,#dc2743,#bc1888);
-      border-radius:4px; transition:width .3s ease;
+    .status-box.loading { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); color:rgba(255,255,255,.6); }
+    .status-box.error   { background:rgba(255,60,60,.08); border:1px solid rgba(255,60,60,.2); color:#ff9090; }
+    .status-box.success { background:rgba(30,200,100,.07); border:1px solid rgba(30,200,100,.18); color:#7dffb3; }
+    /* Progress */
+    .pbar-wrap { height:3px; background:rgba(255,255,255,.07); border-radius:3px; margin-top:10px; overflow:hidden; }
+    .pbar { height:3px; width:0%; background:linear-gradient(90deg,#f09433,#dc2743,#bc1888); border-radius:3px; transition:width .25s ease; }
+    /* Log */
+    .log-toggle {
+      background:transparent; border:none; color:rgba(255,255,255,.22);
+      font-size:11px; cursor:pointer; font-family:'DM Sans',sans-serif;
+      margin-top:6px; display:inline-block; text-decoration:underline;
+      transition:color .2s;
     }
-
+    .log-toggle:hover { color:rgba(255,255,255,.5); }
+    .log-box {
+      display:none; margin-top:8px; background:rgba(0,0,0,.3);
+      border-radius:8px; padding:10px 14px;
+      font-family:'Courier New',monospace; font-size:11px;
+      color:rgba(255,255,255,.35); line-height:1.6; max-height:120px; overflow-y:auto;
+    }
+    .log-box.show { display:block; }
+    /* Video */
     .video-wrap {
-      display:none; margin-top:18px;
-      border-radius:16px; overflow:hidden;
-      border:1px solid rgba(255,255,255,.1);
-      animation: fadeUp .4s ease;
-      background:#000;
+      display:none; margin-top:18px; border-radius:16px; overflow:hidden;
+      border:1px solid rgba(255,255,255,.1); background:#000; animation:fadeUp .4s ease;
     }
     .video-wrap.show { display:block; }
     .video-wrap video { width:100%; display:block; max-height:360px; }
-
-    .meta { display:none; margin-top:14px; animation: fadeUp .4s ease .1s both; }
+    /* Meta */
+    .meta { display:none; margin-top:14px; animation:fadeUp .4s ease .1s both; }
     .meta.show { display:block; }
-    .meta-title { font-size:13px; color:rgba(255,255,255,.5); font-family:'DM Sans',sans-serif; line-height:1.5; margin-bottom:14px; }
-
+    .meta-title { font-size:13px; color:rgba(255,255,255,.45); font-family:'DM Sans',sans-serif; line-height:1.5; margin-bottom:14px; }
     .dl-btn {
       width:100%; padding:17px;
       background: linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);
       border:none; border-radius:12px; color:#fff;
       font-family:'Sora',sans-serif; font-weight:700; font-size:15px;
       cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px;
-      box-shadow:0 6px 28px rgba(220,39,67,.35);
-      transition:opacity .2s, transform .15s;
+      box-shadow:0 6px 28px rgba(220,39,67,.35); transition:opacity .2s, transform .15s;
     }
     .dl-btn:hover:not(:disabled) { opacity:.92; transform:translateY(-1px); }
-    .dl-btn:disabled { opacity:.5; cursor:not-allowed; }
-
+    .dl-btn:disabled { opacity:.5; cursor:not-allowed; transform:none; }
     .reset-btn {
       background:transparent; border:none; color:rgba(255,255,255,.3);
       font-size:13px; cursor:pointer; text-decoration:underline;
@@ -118,25 +109,15 @@
       display:block; width:100%; text-align:center; transition:color .2s;
     }
     .reset-btn:hover { color:rgba(255,255,255,.6); }
-
-    @keyframes fadeUp {
-      from { opacity:0; transform:translateY(10px); }
-      to   { opacity:1; transform:translateY(0); }
-    }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
     .spin {
-      display:inline-block; width:16px; height:16px;
+      display:inline-block; width:15px; height:15px;
       border:2px solid rgba(255,255,255,.25); border-top-color:#fff;
       border-radius:50%; animation:spinr .7s linear infinite; vertical-align:middle; margin-right:6px;
     }
-    @keyframes spinr { to { transform:rotate(360deg); } }
-
+    @keyframes spinr { to{transform:rotate(360deg)} }
     .footer { margin-top:28px; text-align:center; color:rgba(255,255,255,.15); font-size:12px; font-family:'DM Sans',sans-serif; line-height:1.8; }
-
-    @media(max-width:480px){
-      .card { padding:26px 18px; }
-      .input-row { flex-direction:column; }
-      .fetch-btn { width:100%; }
-    }
+    @media(max-width:480px){ .card{padding:26px 18px;} .input-row{flex-direction:column;} .fetch-btn{width:100%;} }
   </style>
 </head>
 <body>
@@ -145,24 +126,29 @@
   <div class="ig-logo">📸</div>
   <div>
     <h1>IG Video Downloader</h1>
-    <p>Direct download — no redirects, runs in your browser</p>
+    <p>Posts · Reels · IGTV — Direct MP4 Download</p>
   </div>
 </div>
 
 <div class="card">
   <div class="label">Paste Instagram Link</div>
   <div class="input-row">
-    <input type="text" id="urlInput" placeholder="https://www.instagram.com/reel/..." autocomplete="off" spellcheck="false" />
+    <input type="text" id="urlInput" placeholder="https://www.instagram.com/reel/ABC123/" autocomplete="off" spellcheck="false" />
     <button class="fetch-btn" id="fetchBtn">Fetch →</button>
   </div>
 
-  <div class="status-box" id="statusBox"></div>
+  <div class="status-box" id="statusBox">
+    <span id="statusMsg"></span>
+    <div class="pbar-wrap"><div class="pbar" id="pbar"></div></div>
+    <button class="log-toggle" id="logToggle" style="display:none">▸ Show debug log</button>
+    <div class="log-box" id="logBox"></div>
+  </div>
 
   <div class="video-wrap" id="videoWrap">
     <video id="videoEl" controls playsinline preload="metadata"></video>
   </div>
 
-  <div class="meta" id="meta">
+  <div class="meta" id="metaEl">
     <div class="meta-title" id="metaTitle"></div>
     <button class="dl-btn" id="dlBtn">
       <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
@@ -176,221 +162,364 @@
 
 <div class="footer">
   Works with public Instagram posts, reels &amp; IGTV.<br/>
-  No login required &middot; No data stored &middot; 100% browser-based.
+  No login required · No data stored · 100% browser-based.
 </div>
 
 <script>
-  const urlInput  = document.getElementById('urlInput');
-  const fetchBtn  = document.getElementById('fetchBtn');
-  const statusBox = document.getElementById('statusBox');
-  const videoWrap = document.getElementById('videoWrap');
-  const videoEl   = document.getElementById('videoEl');
-  const metaEl    = document.getElementById('meta');
-  const metaTitle = document.getElementById('metaTitle');
-  const dlBtn     = document.getElementById('dlBtn');
-  const resetBtn  = document.getElementById('resetBtn');
+// ─────────────────────────────────────────────
+//  CONFIG
+// ─────────────────────────────────────────────
 
-  let currentVideoUrl = '';
-  let currentFilename = 'instagram_video.mp4';
+// CORS proxies – tried in order for every target URL
+const PROXIES = [
+  {
+    name: 'CorsProxy.io',
+    wrap: u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
+    headers: {
+      'User-Agent': 'facebookexternalhit/1.1 (+http://www.facebook.com/externalhit_uatext.php)',
+      'Accept-Language': 'en-US,en;q=0.9',
+    },
+  },
+  {
+    name: 'AllOrigins',
+    wrap: u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+    headers: {},
+  },
+  {
+    name: 'CodeTabs',
+    wrap: u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+    headers: {},
+  },
+  {
+    name: 'CorsAnywhere',
+    wrap: u => `https://cors-anywhere.herokuapp.com/${u}`,
+    headers: { 'X-Requested-With': 'XMLHttpRequest' },
+  },
+];
 
-  // CORS proxies tried in order
-  const PROXIES = [
-    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-    u => `https://thingproxy.freeboard.io/fetch/${encodeURIComponent(u)}`,
+// Video URL extraction patterns – ordered by reliability
+const VIDEO_PATTERNS = [
+  // JSON-LD schema.org VideoObject
+  /"contentUrl"\s*:\s*"(https?:[^"]+)"/i,
+  // OG video meta tags
+  /property=["']og:video:secure_url["'][^>]+content=["']([^"']+)["']/i,
+  /content=["']([^"']+)["'][^>]+property=["']og:video:secure_url["']/i,
+  /property=["']og:video["'][^>]+content=["']([^"']+\.mp4[^"']*)["']/i,
+  /content=["']([^"']+\.mp4[^"']*)["'][^>]+property=["']og:video["']/i,
+  // JSON fields in script blocks
+  /"video_url"\s*:\s*"(https?:[^"\\]+(?:\\.[^"\\]*)*)"/i,
+  /"playback_url"\s*:\s*"(https?:[^"\\]+(?:\\.[^"\\]*)*)"/i,
+  /"video_dash_manifest"\s*:\s*null[^}]+"video_url"\s*:\s*"(https?:[^"]+)"/is,
+  // HTML video / source tags
+  /<video[^>]+src=["'](https?:[^"']+\.mp4[^"']*)["']/i,
+  /<source[^>]+src=["'](https?:[^"']+\.mp4[^"']*)["']/i,
+  // CDN URL patterns
+  /(https:\/\/[^"'\s\\]*video[^"'\s\\]*\.cdninstagram\.com[^"'\s\\]*)/i,
+  /(https:\/\/[^"'\s\\]*\.fbcdn\.net\/[^"'\s\\]*\.mp4[^"'\s\\]*)/i,
+  /(https:\/\/[^"'\s\\]*cdninstagram[^"'\s\\]*\.mp4[^"'\s\\]*)/i,
+  // Escaped JSON
+  /"video_url":"(https:\\u002F\\u002F[^"]+)"/i,
+];
+
+// ─────────────────────────────────────────────
+//  HELPERS
+// ─────────────────────────────────────────────
+
+function decode(s) {
+  return s
+    .replace(/\\u002F/gi, '/').replace(/\\u0026/gi, '&')
+    .replace(/\\u003C/gi, '<').replace(/\\u003E/gi, '>')
+    .replace(/\\u003D/gi, '=').replace(/\\\//g, '/')
+    .replace(/\\n/g, '').replace(/\\r/g, '')
+    .replace(/&amp;/g, '&').replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>').replace(/&quot;/g, '"');
+}
+
+function getShortcode(url) {
+  const m = url.match(/instagram\.com\/(?:p|reel|tv)\/([A-Za-z0-9_\-]+)/);
+  return m ? m[1] : null;
+}
+
+function guessType(url) {
+  if (url.includes('/reel/')) return 'reel';
+  if (url.includes('/tv/'))   return 'tv';
+  return 'p';
+}
+
+// Build all URLs to probe (embed pages first – they're server-rendered)
+function buildCandidates(rawUrl) {
+  const sc = getShortcode(rawUrl);
+  if (!sc) return [rawUrl];
+  return [
+    `https://www.instagram.com/reel/${sc}/embed/captioned/`,
+    `https://www.instagram.com/p/${sc}/embed/captioned/`,
+    `https://www.instagram.com/tv/${sc}/embed/captioned/`,
+    `https://www.instagram.com/reel/${sc}/embed/`,
+    `https://www.instagram.com/p/${sc}/embed/`,
+    rawUrl,
   ];
+}
 
-  // ── UI helpers ──
-  function setStatus(html, type = 'loading') {
-    statusBox.className = `status-box show ${type}`;
-    statusBox.innerHTML = html;
-    if (type === 'loading') {
-      statusBox.innerHTML += `<div class="progress-bar-wrap"><div class="progress-bar" id="pbar"></div></div>`;
-      animBar();
-    }
-  }
-  function animBar() {
-    let w = 0;
-    const iv = setInterval(() => {
-      const bar = document.getElementById('pbar');
-      if (!bar) { clearInterval(iv); return; }
-      w = Math.min(w + Math.random() * 15, 82);
-      bar.style.width = w + '%';
-      if (w >= 82) clearInterval(iv);
-    }, 200);
-  }
-  function completeBar() {
-    const bar = document.getElementById('pbar');
-    if (bar) bar.style.width = '100%';
-  }
-
-  // ── Decode HTML entities & escaped unicode ──
-  function decode(s) {
-    return s
-      .replace(/\\u0026/g,'&').replace(/\\u003C/g,'<').replace(/\\u003E/g,'>')
-      .replace(/\\u003D/g,'=').replace(/\\n/g,'').replace(/\\\//g,'/')
-      .replace(/&amp;/g,'&').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/&quot;/g,'"');
-  }
-
-  // ── Extract video URL from raw HTML ──
-  function extractVideo(html) {
-    const patterns = [
-      // og:video:secure_url
-      /<meta[^>]+property=["']og:video:secure_url["'][^>]+content=["']([^"']+\.mp4[^"']*)["']/i,
-      /<meta[^>]+content=["']([^"']+\.mp4[^"']*)["'][^>]+property=["']og:video:secure_url["']/i,
-      // og:video
-      /<meta[^>]+property=["']og:video["'][^>]+content=["']([^"']+\.mp4[^"']*)["']/i,
-      /<meta[^>]+content=["']([^"']+\.mp4[^"']*)["'][^>]+property=["']og:video["']/i,
-      // JSON video_url
-      /"video_url"\s*:\s*"([^"]+\.mp4[^"]*)"/,
-      /"playback_url"\s*:\s*"([^"]+\.mp4[^"]*)"/,
-      /"src"\s*:\s*"(https:\/\/[^"]+\.mp4[^"]*)"/,
-      // fallback: any cdninstagram mp4
-      /(https:\/\/[^"'\s]+cdninstagram[^"'\s]+\.mp4[^"'\s]*)/,
-      /(https:\/\/[^"'\s]+\.mp4\?[^"'\s]*efg=[^"'\s]*)/,
-    ];
-    for (const p of patterns) {
-      const m = html.match(p);
-      if (m && m[1]) return decode(m[1]);
-    }
-    return null;
-  }
-
-  function extractTitle(html) {
-    const m = html.match(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i)
-           || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:title["']/i);
-    return m ? decode(m[1]) : '';
-  }
-
-  // ── Fetch through proxies ──
-  async function fetchHtml(targetUrl) {
-    for (let i = 0; i < PROXIES.length; i++) {
-      try {
-        setStatus(`<span class="spin"></span> Trying proxy ${i + 1} of ${PROXIES.length}...`);
-        const res = await fetch(PROXIES[i](targetUrl), {
-          headers: { 'Accept': 'text/html,application/xhtml+xml' }
-        });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const text = await res.text();
-        if (text.length > 1000) return text;
-      } catch (e) {
-        // try next proxy
+function extractVideoUrl(html) {
+  for (const p of VIDEO_PATTERNS) {
+    const m = html.match(p);
+    if (m?.[1]) {
+      const url = decode(m[1]).trim();
+      // Must look like a real video URL
+      if (url.startsWith('http') && url.length > 30 &&
+          (url.includes('.mp4') || url.includes('video') || url.includes('cdninstagram') || url.includes('fbcdn'))) {
+        return url;
       }
     }
-    return null;
   }
+  return null;
+}
 
-  // ── Main fetch flow ──
-  async function fetchVideo() {
-    const raw = urlInput.value.trim();
-    if (!raw) return;
+function extractTitle(html) {
+  const m = html.match(/property=["']og:title["'][^>]+content=["']([^"']+)["']/i)
+          || html.match(/content=["']([^"']+)["'][^>]+property=["']og:title["']/i);
+  return m ? decode(m[1]) : '';
+}
 
-    if (!raw.includes('instagram.com')) {
-      setStatus('⚠️ Please paste a valid Instagram URL.', 'error');
-      return;
-    }
+// ─────────────────────────────────────────────
+//  UI
+// ─────────────────────────────────────────────
 
-    // Reset UI
-    videoWrap.classList.remove('show');
-    metaEl.classList.remove('show');
-    currentVideoUrl = '';
-    videoEl.src = '';
-    fetchBtn.disabled = true;
+const urlInput  = document.getElementById('urlInput');
+const fetchBtn  = document.getElementById('fetchBtn');
+const statusBox = document.getElementById('statusBox');
+const statusMsg = document.getElementById('statusMsg');
+const pbarEl    = document.getElementById('pbar');
+const logToggle = document.getElementById('logToggle');
+const logBox    = document.getElementById('logBox');
+const videoWrap = document.getElementById('videoWrap');
+const videoEl   = document.getElementById('videoEl');
+const metaEl    = document.getElementById('metaEl');
+const metaTitle = document.getElementById('metaTitle');
+const dlBtn     = document.getElementById('dlBtn');
+const resetBtn  = document.getElementById('resetBtn');
 
-    setStatus('<span class="spin"></span> Connecting to Instagram...');
+let currentVideoUrl = '';
+let currentFilename = 'instagram_video.mp4';
+let logLines = [];
+let logVisible = false;
 
-    const html = await fetchHtml(raw);
+let pbarVal = 0;
+let pbarTimer = null;
+function startPbar() {
+  pbarVal = 0; pbarEl.style.width = '0%';
+  pbarTimer = setInterval(() => {
+    pbarVal = Math.min(pbarVal + Math.random() * 6, 80);
+    pbarEl.style.width = pbarVal + '%';
+  }, 300);
+}
+function donePbar() {
+  clearInterval(pbarTimer);
+  pbarEl.style.width = '100%';
+}
 
-    if (!html) {
-      fetchBtn.disabled = false;
-      setStatus('❌ Could not reach Instagram through any proxy. Try again in a moment — Instagram sometimes rate-limits requests.', 'error');
-      return;
-    }
+function addLog(line) {
+  logLines.push(line);
+  if (logLines.length > 40) logLines.shift();
+  logBox.innerHTML = logLines.map(l => `<div>${l}</div>`).join('');
+  logBox.scrollTop = logBox.scrollHeight;
+}
 
-    setStatus('<span class="spin"></span> Scanning for video data...');
-    await new Promise(r => setTimeout(r, 300));
+function setStatus(msg, type = 'loading') {
+  statusBox.className = `status-box show ${type}`;
+  statusMsg.innerHTML = msg;
+  logToggle.style.display = (type === 'loading' || type === 'error') ? 'inline' : 'none';
+}
 
-    const videoUrl = extractVideo(html);
+logToggle.addEventListener('click', () => {
+  logVisible = !logVisible;
+  logBox.classList.toggle('show', logVisible);
+  logToggle.textContent = logVisible ? '▾ Hide debug log' : '▸ Show debug log';
+});
 
-    if (!videoUrl) {
-      fetchBtn.disabled = false;
-      setStatus([
-        '❌ No video found in this post.',
-        '<br><small style="opacity:.65;font-size:12px">Possible reasons: private account, photo-only post, story (stories can\'t be extracted), or Instagram blocked the data for logged-out users.</small>'
-      ].join(''), 'error');
-      return;
-    }
+function resetAll() {
+  urlInput.value = '';
+  statusBox.className = 'status-box';
+  videoWrap.classList.remove('show');
+  metaEl.classList.remove('show');
+  videoEl.src = '';
+  currentVideoUrl = '';
+  logLines = [];
+  logBox.innerHTML = '';
+  logVisible = false;
+  logBox.classList.remove('show');
+  logToggle.textContent = '▸ Show debug log';
+  pbarEl.style.width = '0%';
+}
 
-    completeBar();
-    currentVideoUrl = videoUrl;
+// ─────────────────────────────────────────────
+//  FETCH ENGINE
+// ─────────────────────────────────────────────
 
-    const sc = raw.match(/\/(?:p|reel|tv)\/([A-Za-z0-9_\-]+)/);
-    currentFilename = `instagram_${sc ? sc[1] : Date.now()}.mp4`;
-
-    const title = extractTitle(html);
-    metaTitle.textContent = title ? `📌 ${title}` : `📌 ${currentFilename}`;
-
-    setStatus('✅ Video found! Preview below.', 'success');
-
-    videoEl.src = videoUrl;
-    videoWrap.classList.add('show');
-    metaEl.classList.add('show');
-
-    fetchBtn.disabled = false;
+async function tryFetch(proxy, targetUrl) {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  try {
+    const res = await fetch(proxy.wrap(targetUrl), {
+      headers: proxy.headers || {},
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const text = await res.text();
+    if (!text || text.length < 300) throw new Error('Empty response');
+    return text;
+  } finally {
+    clearTimeout(timeout);
   }
+}
 
-  // ── Download ──
-  dlBtn.addEventListener('click', async () => {
-    if (!currentVideoUrl) return;
-    dlBtn.disabled = true;
-    dlBtn.innerHTML = `<span class="spin"></span> Downloading...`;
+async function findVideo(rawUrl) {
+  const candidates = buildCandidates(rawUrl);
+  addLog(`🔍 Shortcode: ${getShortcode(rawUrl) || 'n/a'}`);
+  addLog(`📋 ${candidates.length} URLs × ${PROXIES.length} proxies = ${candidates.length * PROXIES.length} attempts`);
 
-    let saved = false;
-
-    // Try fetching as blob through proxies first
+  for (const targetUrl of candidates) {
     for (const proxy of PROXIES) {
+      const label = `${proxy.name} → ${targetUrl.replace('https://www.instagram.com', '')}`;
+      addLog(`⏳ ${label}`);
+      setStatus(`<span class="spin"></span> ${proxy.name}: ${targetUrl.split('/').slice(3, 7).join('/')}`);
+
       try {
-        const res = await fetch(proxy(currentVideoUrl));
-        if (!res.ok) throw new Error('bad');
-        const blob = await res.blob();
-        const bUrl = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = bUrl; a.download = currentFilename;
-        document.body.appendChild(a); a.click(); a.remove();
-        setTimeout(() => URL.revokeObjectURL(bUrl), 8000);
-        saved = true;
-        break;
-      } catch { /* next */ }
-    }
+        const html = await tryFetch(proxy, targetUrl);
+        addLog(`✅ Got ${(html.length / 1024).toFixed(1)} KB`);
 
-    if (!saved) {
-      // Fallback: open direct URL
+        const videoUrl = extractVideoUrl(html);
+        if (videoUrl) {
+          addLog(`🎬 FOUND: ${videoUrl.slice(0, 80)}...`);
+          const title = extractTitle(html);
+          return { videoUrl, title };
+        } else {
+          addLog(`⚠️  No video URL in this response`);
+        }
+      } catch (e) {
+        addLog(`❌ ${label}: ${e.message}`);
+      }
+    }
+  }
+  return null;
+}
+
+// ─────────────────────────────────────────────
+//  MAIN
+// ─────────────────────────────────────────────
+
+async function run() {
+  const raw = urlInput.value.trim();
+  if (!raw) return;
+
+  if (!raw.includes('instagram.com')) {
+    setStatus('⚠️ Please paste a valid Instagram URL.', 'error');
+    return;
+  }
+
+  videoWrap.classList.remove('show');
+  metaEl.classList.remove('show');
+  currentVideoUrl = '';
+  videoEl.src = '';
+  logLines = [];
+  logBox.innerHTML = '';
+  fetchBtn.disabled = true;
+
+  startPbar();
+  setStatus('<span class="spin"></span> Starting...', 'loading');
+  logToggle.style.display = 'inline';
+
+  let result = null;
+  try {
+    result = await findVideo(raw);
+  } catch (e) {
+    addLog(`💥 Unexpected error: ${e.message}`);
+  }
+
+  donePbar();
+  fetchBtn.disabled = false;
+
+  if (!result) {
+    setStatus(
+      '❌ Could not extract video after trying all proxies & methods.<br>' +
+      '<small style="opacity:.65;font-size:11.5px">Open debug log below — it shows exactly what was tried. ' +
+      'Most common cause: Instagram served a logged-out wall or rate-limited the request. Try again in ~30 seconds.</small>',
+      'error'
+    );
+    logToggle.style.display = 'inline';
+    return;
+  }
+
+  currentVideoUrl = result.videoUrl;
+  const sc = getShortcode(raw);
+  currentFilename = `instagram_${sc || Date.now()}.mp4`;
+
+  setStatus('✅ Video found! Preview below — click Download to save.', 'success');
+  logToggle.style.display = 'none';
+
+  videoEl.src = currentVideoUrl;
+  videoWrap.classList.add('show');
+
+  metaTitle.textContent = result.title ? `📌 ${result.title}` : `📌 ${currentFilename}`;
+  metaEl.classList.add('show');
+}
+
+// ─────────────────────────────────────────────
+//  DOWNLOAD
+// ─────────────────────────────────────────────
+
+dlBtn.addEventListener('click', async () => {
+  if (!currentVideoUrl) return;
+  dlBtn.disabled = true;
+  dlBtn.innerHTML = `<span class="spin"></span> Preparing download...`;
+
+  let saved = false;
+
+  // Method 1: fetch as blob through proxies → true file download
+  for (const proxy of PROXIES) {
+    try {
+      addLog(`⬇️  Downloading via ${proxy.name}`);
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 30000);
+      const res = await fetch(proxy.wrap(currentVideoUrl), { signal: controller.signal });
+      clearTimeout(timeout);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const blob = await res.blob();
+      const bUrl = URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = currentVideoUrl;
-      a.download = currentFilename;
-      a.target = '_blank';
+      a.href = bUrl; a.download = currentFilename;
       document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(bUrl), 10000);
+      saved = true;
+      addLog(`✅ Download started via ${proxy.name}`);
+      break;
+    } catch (e) {
+      addLog(`❌ Blob DL failed ${proxy.name}: ${e.message}`);
     }
+  }
 
-    dlBtn.disabled = false;
-    dlBtn.innerHTML = `
-      <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/>
-      </svg>
-      Download Video (MP4)`;
-  });
+  // Method 2: open in new tab (browser saves as video)
+  if (!saved) {
+    addLog('⚡ Fallback: opening video URL directly');
+    window.open(currentVideoUrl, '_blank', 'noopener');
+  }
 
-  fetchBtn.addEventListener('click', fetchVideo);
-  urlInput.addEventListener('keydown', e => { if (e.key === 'Enter') fetchVideo(); });
-  resetBtn.addEventListener('click', () => {
-    urlInput.value = '';
-    statusBox.className = 'status-box';
-    videoWrap.classList.remove('show');
-    metaEl.classList.remove('show');
-    videoEl.src = '';
-    currentVideoUrl = '';
-    urlInput.focus();
-  });
+  dlBtn.disabled = false;
+  dlBtn.innerHTML = `
+    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v12m0 0l-4-4m4 4l4-4M4 20h16"/>
+    </svg>
+    Download Video (MP4)`;
+});
+
+// ─────────────────────────────────────────────
+//  EVENTS
+// ─────────────────────────────────────────────
+
+fetchBtn.addEventListener('click', run);
+urlInput.addEventListener('keydown', e => { if (e.key === 'Enter') run(); });
+resetBtn.addEventListener('click', resetAll);
 </script>
 </body>
 </html>
